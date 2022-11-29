@@ -1,0 +1,113 @@
+package db_mysql
+
+import (
+	"asm_platform/domain/repository"
+	"asm_platform/infrastructure/repo"
+	"fmt"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
+	"time"
+)
+
+type Repositories struct {
+	User repository.UserRepository
+	db   *gorm.DB
+}
+
+func NewRepositories(DbDriver, DbUser, DbPassword, DbPort, DbHost, DbName string, MaxOpenConn, MaxIdleConn int) (*Repositories, error) {
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local",
+		DbUser, DbPassword, DbHost, DbPort, DbName)
+	mysqlDB, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Info),
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	sqlDB, _ := mysqlDB.DB()
+	sqlDB.SetConnMaxLifetime(10 * time.Minute)
+	sqlDB.SetMaxOpenConns(MaxOpenConn)
+	sqlDB.SetMaxIdleConns(MaxIdleConn)
+	// SetMaxIdleConns 设置空闲连接池中连接的最大数量
+	sqlDB.SetMaxIdleConns(10)
+	return &Repositories{
+		User: repo.NewUserRepository(mysqlDB),
+		db:   mysqlDB,
+	}, nil
+}
+
+// Close close mysql
+func (s *Repositories) Close() error {
+	sqlDB, _ := s.db.DB()
+	return sqlDB.Close()
+}
+
+//
+//// KEY 开启事务时，存在context中的值
+//const KEY = "Context_DB_Transaction"
+//
+//// DBT 通过传递的Context获取DB，所有执行SQL务必使用这个函数获取DB
+//func DBT(ctx context.Context) *gorm.DB {
+//	if ctx != nil {
+//		//获取上下文
+//		tx := ctx.Value(KEY)
+//		if tx != nil {
+//			//如果不为空，已开启事务，返回事务DB
+//			return tx.(*gorm.DB)
+//		}
+//	}
+//	//如果为空，说明没有开启事务，默认以非事务执行
+//	return
+//}
+//
+//// Begin 开启事务，事务一旦开始，必须使用 tx 处理数据!
+//func Begin(ctx context.Context) context.Context {
+//	tx := db.Begin()
+//	//放入上下文
+//	return context.WithValue(ctx, KEY, tx)
+//}
+//
+//// Commit 提交事务
+//func Commit(ctx context.Context) (code constApiCode.SocError) {
+//	tx := DBT(ctx)
+//	err := tx.Commit()
+//	if err != nil {
+//		return constApiCode.DBTxCommitError
+//	}
+//	return constApiCode.Success
+//}
+//
+//// Rollback 回滚事务
+//func Rollback(ctx context.Context) (code constApiCode.SocError) {
+//	tx := DBT(ctx)
+//	err := tx.Rollback()
+//	if err.Error != nil {
+//		fmt.Println("事务回滚失败", err.Error)
+//		return constApiCode.DBTxRollbackError
+//	}
+//	return constApiCode.Success
+//}
+//
+//// SavePoint 保存点，可以使用 RollbackTo() 回滚到此位置再提交
+//func SavePoint(ctx context.Context, pointName string) (code constApiCode.SocError) {
+//	tx := DBT(ctx)
+//	point := tx.SavePoint(pointName)
+//	if point.Error != nil {
+//		fmt.Println("事务保存点失败", point.Error)
+//		return constApiCode.DBTxSavePointError
+//	}
+//
+//	return constApiCode.Success
+//}
+//
+//// RollbackTo 回滚至某个保存点
+//func RollbackTo(ctx context.Context, pointName string) (code constApiCode.SocError) {
+//	tx := DBT(ctx)
+//	rollback := tx.RollbackTo(pointName)
+//	if rollback.Error != nil {
+//		fmt.Println("事务回滚至保存点失败", rollback.Error)
+//		return constApiCode.DBTxRollbackToError
+//	}
+//	return constApiCode.Success
+//}

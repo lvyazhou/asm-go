@@ -1,0 +1,340 @@
+definitions:
+  dto.UserDTO:
+    properties:
+      account:
+        description: Account 账户名称
+        maxLength: 32
+        minLength: 4
+        type: string
+      email:
+        description: Email 电子邮件
+        maxLength: 64
+        minLength: 1
+        type: string
+      mobile:
+        description: Mobile 手机号码
+        type: string
+      name:
+        description: Name 姓名
+        maxLength: 32
+        minLength: 1
+        type: string
+      pass_word:
+        description: 密码
+        type: string
+      role_list:
+        description: 角色列表
+        items:
+          type: string
+        type: array
+      status:
+        description: Status 用户状态 @see constants.user_status 1:正常；2：禁用；3：已删除'
+        maximum: 3
+        minimum: 0
+        type: integer
+    required:
+    - account
+    - email
+    - mobile
+    - name
+    type: object
+  dto.UserQueryDto:
+    properties:
+      email:
+        description: 邮箱
+        type: string
+      page:
+        description: 分页页面 从0开始
+        type: integer
+      pageSize:
+        description: 分页大小 默认10
+        type: integer
+      uname:
+        description: 用户名
+        type: string
+    type: object
+  handler.Response:
+    properties:
+      code:
+        type: integer
+      data: {}
+      message:
+        type: string
+    type: object
+  login_handle.requestLogin:
+    properties:
+      account:
+        description: 账户名
+        maxLength: 64
+        minLength: 6
+        type: string
+      auth_code:
+        description: 验证码
+        type: string
+      password:
+        description: 密码
+        maxLength: 32
+        minLength: 8
+        type: string
+    required:
+    - account
+    - auth_code
+    - password
+    type: object
+  vo.LoginVo:
+    properties:
+      name:
+        description: 用户名称
+        type: string
+      token:
+        description: 用户token
+        type: string
+      user_id:
+        description: 用户ID
+        type: integer
+    type: object
+  vo.UserRoleVo:
+    properties:
+      role_id:
+        type: integer
+      role_name:
+        type: string
+    type: object
+  vo.UserVO:
+    properties:
+      account:
+        description: Account 账户名称
+        type: string
+      create_time:
+        description: CreateTime 创建时间
+        type: string
+      create_user:
+        description: CreateUser 创建人ID
+        type: string
+      email:
+        description: Email 电子邮件
+        type: string
+      id:
+        description: ID 雪花算法生成
+        type: integer
+      mobile:
+        description: Mobile 手机号码
+        type: string
+      name:
+        description: Name 姓名
+        type: string
+      role_list:
+        description: 角色列表
+        items:
+          $ref: '#/definitions/vo.UserRoleVo'
+        type: array
+      status_name:
+        description: Status 用户状态 @see constants.user_status 1:正常；2：禁用；3：已删除'
+        type: string
+      update_time:
+        description: UpdateTime 更新时间
+        type: string
+      update_user:
+        description: UpdateUser 更新人ID
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /captcha:
+    get:
+      consumes:
+      - application/json
+      description: 验证码
+      produces:
+      - application/json
+      responses: {}
+      summary: 验证码
+      tags:
+      - 登录
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: 登录
+      parameters:
+      - description: 登录请求信息
+        in: body
+        name: requestLogin
+        required: true
+        schema:
+          $ref: '#/definitions/login_handle.requestLogin'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/vo.LoginVo'
+      summary: 登录
+      tags:
+      - 登录
+  /logout:
+    post:
+      consumes:
+      - application/json
+      description: 登出
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: 登出
+      tags:
+      - 登出
+  /oplog/list/:
+    post:
+      consumes:
+      - application/json
+      description: 查询审计日志
+      parameters:
+      - description: 请求uri
+        in: path
+        name: requestUri
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: 查询审计日志
+      tags:
+      - 日志管理
+  /refresh:
+    post:
+      consumes:
+      - application/json
+      description: 用户续期
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/vo.LoginVo'
+      security:
+      - ApiKeyAuth: []
+      summary: 用户续期
+      tags:
+      - 用户续期
+  /user/del/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: 根据用户ID删除用户信息
+      parameters:
+      - description: 用户ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: 删除用户信息
+      tags:
+      - 用户管理
+  /user/get/:
+    get:
+      consumes:
+      - application/json
+      description: 个人用户信息
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/vo.UserVO'
+      security:
+      - ApiKeyAuth: []
+      summary: 个人用户信息
+      tags:
+      - 用户管理
+  /user/get/{id}:
+    get:
+      consumes:
+      - application/json
+      description: 个人用户信息
+      parameters:
+      - description: 用户ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: 个人用户信息
+      tags:
+      - 用户管理
+  /user/list/:
+    post:
+      consumes:
+      - application/json
+      description: 用户分页查询
+      parameters:
+      - description: 用户查询实体
+        in: body
+        name: userQuery
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UserQueryDto'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/vo.UserVO'
+      security:
+      - ApiKeyAuth: []
+      summary: 用户分页查询
+      tags:
+      - 用户管理
+  /user/save/:
+    post:
+      consumes:
+      - application/json
+      description: 创建用户
+      parameters:
+      - description: request user
+        in: body
+        name: userDTO
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UserDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: 创建用户
+      tags:
+      - 用户管理
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: asm_platform-TOKEN
+    type: apiKey
+swagger: "2.0"
