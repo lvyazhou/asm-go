@@ -19,7 +19,7 @@ func Init() {
 	// swag初始化
 	swag.Init(r, conf)
 
-	// 服务启动
+	// 服务启动1
 	listenAddr := conf.GetString("server.listen")
 	if err := r.Run(listenAddr); err != nil {
 		log.Panicf("error on listening to %s: %s\n", listenAddr, err)
