@@ -7,12 +7,10 @@
        *代码结构清晰：通过POM module可以解决模块间的依赖关系， 所有外接模块都可以单独独立成Jar包被复用。当团队形成规范后，可以快速的定位到相关代码。
 
 # 四层架构：
-    表现层（Interfaces）
-    应用层（Application）
-    领域层（Domain）
-    基础设施层（Infrastructure）
-
-# 【asm 采用4层架构 DDD版本 】
+    表现层（interfaces）
+    应用层（application）
+    领域层（domain）
+    基础设施层（infrastructure）
 
 ## Interfaces 对外服务层(展现层/协议转换) 最顶层
     通常叫【interfaces/web/controller/adapter】因未来前后端分离是主流，后端只负责提供接，因此这里叫【api】，
