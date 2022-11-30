@@ -8,7 +8,7 @@ import (
 )
 
 func SetupLoginRouter(group *gin.RouterGroup) {
-	group.Use(mds.Session("asm_platform-super-api"))
+	group.Use(mds.Session("asm-super-api"))
 	// 实例化应用层接口
 	login := login_handle.NewLogins(login_app.NewLoginApp())
 	group.POST("/login", login.Login)
@@ -16,7 +16,7 @@ func SetupLoginRouter(group *gin.RouterGroup) {
 }
 
 func SetupLogOutRouter(group *gin.RouterGroup) {
-	group.Use(mds.Session("asm_platform-super-api"))
+	group.Use(mds.Session("asm-super-api"))
 	// 实例化应用层接口
 	login := login_handle.NewLogins(login_app.NewLoginApp())
 	group.POST("/logout", login.LogOut)

@@ -1,7 +1,6 @@
 package mds
 
-import
-(
+import (
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
@@ -14,7 +13,7 @@ func Session(keyPairs string) gin.HandlerFunc {
 }
 func SessionConfig() sessions.Store {
 	sessionMaxAge := 0
-	sessionSecret := "soc-ss-super-api"
+	sessionSecret := "asm-super-api"
 	var store sessions.Store
 	store = cookie.NewStore([]byte(sessionSecret))
 	store.Options(sessions.Options{
