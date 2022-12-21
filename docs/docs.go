@@ -519,7 +519,7 @@ const docTemplate = `{
     "securityDefinitions": {
         "ApiKeyAuth": {
             "type": "apiKey",
-            "name": "asm_platform-TOKEN",
+            "name": "ASM-TOKEN",
             "in": "header"
         }
     }

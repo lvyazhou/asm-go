@@ -9,6 +9,7 @@ import (
 	utils_tool "asm_platform/infrastructure/pkg/tool/utils"
 	"asm_platform/infrastructure/repo"
 	"encoding/json"
+	"strconv"
 	"time"
 )
 
@@ -71,6 +72,17 @@ func (o OpLogApp) SaveOpLog(opDto *dto.OpLogDTO) constapicode.SocError {
 		slog.Errorf("[soc op log create]:format json fail,err: %v", indexName)
 		return constapicode.DocumentSaveFail
 	}
+	// 发送kafka test
+	r := repo.NewKafkaRepo("lyz", "")
+	m := map[string]string{}
+	key := strconv.FormatInt(time.Now().Unix(), 10)
+	data, err := json.Marshal(opLogInfo)
+	if err != nil {
+		slog.Errorf("kafka json.marshal failed, err: %v", err)
+	}
+	m[key] = string(data)
+	r.WriteKafkaMessage(m)
+
 	return constapicode.Success
 }
 

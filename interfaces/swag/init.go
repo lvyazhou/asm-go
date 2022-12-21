@@ -19,7 +19,7 @@ func Init(r *gin.Engine, conf *viper.Viper) {
 		docs.SwaggerInfo.Version = "1.0"
 		docs.SwaggerInfo.Host = host + ":" + port
 		docs.SwaggerInfo.Schemes = []string{"http", "https"}
-		docs.SwaggerInfo.BasePath = "/asm_platform"
+		docs.SwaggerInfo.BasePath = "/asm"
 		r.GET("/swagger/*any", swagger.WrapHandler(swaggerFiles.Handler))
 	}
 }

@@ -47,7 +47,7 @@ func main() {
 
 	// 加载task queue
 	task.Init()
-
+	
 	// 服务启动
 	server.Init()
 }

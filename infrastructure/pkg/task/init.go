@@ -15,4 +15,6 @@ func Init() {
 	go InsertTaskQueueResult()
 
 	// .........other
+
+	go readKafkaMessage()
 }

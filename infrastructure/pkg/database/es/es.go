@@ -4,7 +4,6 @@ import (
 	"asm_platform/infrastructure/config"
 	"asm_platform/infrastructure/pkg/slog"
 	"github.com/olivere/elastic/v7"
-	"log"
 )
 
 var Client *elastic.Client
@@ -39,7 +38,7 @@ func newEsDriver() error {
 		//elastic.SetTraceLog(log.New(os.Stdout, "ES-Trace-Log ", log.LstdFlags)),
 	)
 	if err != nil {
-		log.Fatalln("Failed to create elasticSearch client")
+		slog.Errorf("Failed to create elasticSearch client %v", err.Error())
 		return err
 	}
 

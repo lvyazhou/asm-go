@@ -7,7 +7,7 @@ import (
 )
 
 func SetupCaptchaRouter(group *gin.RouterGroup) {
-	group.Use(mds.Session("asm_platform-super-api"))
+	group.Use(mds.Session("asm-super-api"))
 	group.GET("/captcha", func(c *gin.Context) {
 		captchaapi.GetCaptchaPng(c, 4)
 	})

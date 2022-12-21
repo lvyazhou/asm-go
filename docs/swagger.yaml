@@ -335,6 +335,6 @@ paths:
 securityDefinitions:
   ApiKeyAuth:
     in: header
-    name: asm_platform-TOKEN
+    name: ASM-TOKEN
     type: apiKey
 swagger: "2.0"

@@ -53,5 +53,6 @@ neo4j:
   pwd: 123456
 
 kafka:
-  kc1: 127.0.0.1:9092
-  topic: asm_kafka_test
+  addr: 127.0.0.1:9092
+  topic1: asm_kafka_test1
+  topic2: asm_kafka_test2
