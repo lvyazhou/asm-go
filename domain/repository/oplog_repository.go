@@ -1,7 +1,7 @@
 package repository
 
 import (
-	oplog_entity "asm_platform/domain/entity/oplog"
+	"asm_platform/domain/entity/oplog"
 )
 
 type OpLogRepository interface {

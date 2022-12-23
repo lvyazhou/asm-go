@@ -43,7 +43,7 @@ func newRedisDriver() error {
 		MaxRetries:  retry,            // 最大重试次数
 		IdleTimeout: 10 * time.Second, // 空闲链接超时时间
 	})
-	pong, err := redisClient.Ping().Result()
+	_, err := redisClient.Ping().Result()
 	if err == redis.Nil {
 		slog.Errorf("Redis链接异常：%v", err.Error())
 		return err
@@ -51,7 +51,7 @@ func newRedisDriver() error {
 		slog.Errorf("Redis链接失败：%v", err.Error())
 		return err
 	} else {
-		slog.Infof("Successfully connected to redis database. %v", pong)
+		slog.Infof("redis Connected...")
 		return nil
 	}
 }

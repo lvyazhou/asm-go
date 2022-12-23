@@ -42,7 +42,7 @@ func newEsDriver() error {
 		return err
 	}
 
-	slog.Infof("elasticSearch Connected...")
+	slog.Infof("es Connected...")
 	Client = c
 	return nil
 }

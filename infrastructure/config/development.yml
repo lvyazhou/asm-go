@@ -22,13 +22,12 @@ mysql:
   maxIdleConn: 10
   maxOpenConn: 20
 
-mongodb:
-  addr: 127.0.0.1
+mgo:
+  local:
+      uri: mongodb://localhost:27007
+  prod:
+      uri: mongodb://user:pass@sample.host:27017/?maxPoolSize=20&w=majority
   db: asm
-  source:
-  user:
-  pwd:
-  limit: 100
 
 redis:
   addr: 127.0.0.1:6379

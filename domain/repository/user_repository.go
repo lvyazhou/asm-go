@@ -1,7 +1,7 @@
 package repository
 
 import (
-	user_entity "asm_platform/domain/entity/user"
+	"asm_platform/domain/entity/user"
 )
 
 type UserRepository interface {

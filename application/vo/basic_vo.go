@@ -3,7 +3,7 @@ package vo
 // vo 公共
 type BasicVo struct {
 	// ID 雪花算法生成
-	ID int64 `json:"id"`
+	ID int64 `json:"id,string"`
 
 	// CreateUser 创建人ID
 	CreateUser string `json:"create_user"`

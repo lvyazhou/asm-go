@@ -3,6 +3,7 @@ package routers
 import (
 	"asm_platform/infrastructure/pkg/slog"
 	mds "asm_platform/interfaces/middelware"
+	asset_router "asm_platform/interfaces/routers/asset"
 	captcharouter "asm_platform/interfaces/routers/captcha"
 	"asm_platform/interfaces/routers/login"
 	oplog_router "asm_platform/interfaces/routers/oplog"
@@ -35,6 +36,9 @@ func InitRouter(r *gin.Engine) *gin.Engine {
 		// 审计日志
 		oplog_router.SetupOpLogRouter(root)
 
+		// 资产信息
+		asset_router.SetupAssetRouter(root)
+		
 	}
 	return r
 }

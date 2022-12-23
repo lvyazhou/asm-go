@@ -4,6 +4,7 @@ import (
 	"asm_platform/infrastructure/config"
 	"asm_platform/infrastructure/pkg/database/es"
 	"asm_platform/infrastructure/pkg/database/kafka"
+	mgo "asm_platform/infrastructure/pkg/database/mongo"
 	db_mysql "asm_platform/infrastructure/pkg/database/mysql"
 	cache "asm_platform/infrastructure/pkg/database/redis"
 	"asm_platform/infrastructure/pkg/slog"
@@ -45,9 +46,12 @@ func main() {
 	// kafka加载
 	kfk.Init()
 
+	// mgo 加载
+	mgo.Init()
+
 	// 加载task queue
 	task.Init()
-	
+
 	// 服务启动
 	server.Init()
 }

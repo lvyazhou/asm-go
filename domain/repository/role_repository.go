@@ -1,6 +1,6 @@
 package repository
 
-import role_entity "asm_platform/domain/entity/role"
+import "asm_platform/domain/entity/role"
 
 type RoleRepository interface {
 

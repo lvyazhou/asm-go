@@ -6,7 +6,6 @@ import (
 	"asm_platform/interfaces/routers"
 	"asm_platform/interfaces/swag"
 	"github.com/gin-gonic/gin"
-	"log"
 )
 
 func Init() {
@@ -14,7 +13,7 @@ func Init() {
 	routers.InitRouter(r)
 
 	conf := config.GetConfig()
-	slog.Infof("start server asm_platform-api %s-%s on %d success...\n", conf.GetString("server.name"), conf.GetString("server.version"), conf.GetInt("server.port"))
+	slog.Infof("start server asm-platform-api %s-%s on %d success...\n", conf.GetString("server.name"), conf.GetString("server.version"), conf.GetInt("server.port"))
 
 	// swag初始化
 	swag.Init(r, conf)
@@ -22,6 +21,6 @@ func Init() {
 	// 服务启动1
 	listenAddr := conf.GetString("server.listen")
 	if err := r.Run(listenAddr); err != nil {
-		log.Panicf("error on listening to %s: %s\n", listenAddr, err)
+		slog.Panicf("error on listening to %s: %s\n", listenAddr, err)
 	}
 }

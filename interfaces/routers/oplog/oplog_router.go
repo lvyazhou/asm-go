@@ -2,7 +2,7 @@ package oplog_router
 
 import (
 	"asm_platform/application/app/oplog_app"
-	oplog_handle "asm_platform/interfaces/handler/oplog"
+	"asm_platform/interfaces/handler/oplog"
 	"github.com/gin-gonic/gin"
 )
 

@@ -63,6 +63,9 @@ func NewMysqlDriver() error {
 	// SetMaxIdleConns 设置空闲连接池中连接的最大数量
 	sqlDB.SetMaxIdleConns(10)
 	db = mysqlDB
+
+	slog.Infof("mysql Connected...")
+
 	return nil
 }
 
