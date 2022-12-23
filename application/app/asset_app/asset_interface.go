@@ -1,6 +1,8 @@
 package asset_app
 
 import (
+	"asm_platform/application/dto"
+	"asm_platform/application/vo"
 	asset_entity "asm_platform/domain/entity/asset"
 	constapicode "asm_platform/infrastructure/pkg/constants/api_code"
 )
@@ -25,5 +27,5 @@ type AssetAppInterface interface {
 	FindAssetList() ([]*asset_entity.Asset, constapicode.SocError)
 
 	// FindAssetListByPage 查询分页
-	FindAssetListByPage() ([]*asset_entity.Asset, int64, constapicode.SocError)
+	FindAssetListByPage(query *dto.AssetQueryDto) ([]*vo.AssetVo, int64, constapicode.SocError)
 }

@@ -24,7 +24,7 @@ func SetupAssetRouter(group *gin.RouterGroup) {
 		assetGroup.POST("/find/", assets.FindAssetList)
 
 		// 查询资产
-		assetGroup.POST("/find_page/", assets.FindAssetListByPage)
+		assetGroup.POST("/list/", assets.FindAssetListByPage)
 
 	}
 }

@@ -1,11 +1,12 @@
 package asset_app
 
 import (
+	"asm_platform/application/dto"
+	"asm_platform/application/vo"
 	asset_entity "asm_platform/domain/entity/asset"
 	constapicode "asm_platform/infrastructure/pkg/constants/api_code"
 	utils_tool "asm_platform/infrastructure/pkg/tool/utils"
 	"asm_platform/infrastructure/repo"
-	"fmt"
 	"strconv"
 	"time"
 )
@@ -90,16 +91,27 @@ func (a AssetApp) FindAssetList() ([]*asset_entity.Asset, constapicode.SocError)
 	return assetList, constapicode.Success
 }
 
-func (a AssetApp) FindAssetListByPage() ([]*asset_entity.Asset, int64, constapicode.SocError) {
-	assetList, count, err := assetRepo.FindAssetListByPage(&asset_entity.AssetQuery{
-		AssetName: "",
-		PageNo:    0,
-		PageSize:  5,
-	})
+func (a AssetApp) FindAssetListByPage(query *dto.AssetQueryDto) ([]*vo.AssetVo, int64, constapicode.SocError) {
+	assetEntity := query.AssetQueryDtoConvertEntity()
+	results, count, err := assetRepo.FindAssetListByPage(assetEntity)
 	if err != nil {
 		return nil, 0, constapicode.DocumentNotFind
 	}
-	fmt.Println("asset list len ", len(assetList))
-	fmt.Println("asset count ", count)
+	var assetList []*vo.AssetVo
+	if len(results) > 0 {
+		// 实例化user repo
+		d := repo.NewUserRepositoryDB()
+		for a := range results {
+			asset := results[a]
+			// convert to vo
+			assetVo := asset.AssetToVo()
+			// 查询用户创建人员
+			cuser, cerr := d.GetUser(asset.CreateUser)
+			if !cuser.IsEmpty() && cerr == nil {
+				assetVo.CreateUser = cuser.Name
+			}
+			assetList = append(assetList, assetVo)
+		}
+	}
 	return assetList, count, constapicode.Success
 }

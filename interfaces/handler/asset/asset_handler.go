@@ -2,7 +2,9 @@ package asset_handle
 
 import (
 	"asm_platform/application/app/asset_app"
+	oplog_dto "asm_platform/application/dto"
 	constapicode "asm_platform/infrastructure/pkg/constants/api_code"
+	"asm_platform/infrastructure/pkg/slog"
 	"asm_platform/interfaces/handler"
 	"github.com/gin-gonic/gin"
 	"strconv"
@@ -47,7 +49,13 @@ func (ah *AssetHandle) FindAssetList(c *gin.Context) {
 }
 
 func (ah *AssetHandle) FindAssetListByPage(c *gin.Context) {
-	assets, counts, err := ah.ah.FindAssetListByPage()
+	var param = &oplog_dto.AssetQueryDto{}
+	if err := c.ShouldBindJSON(param); err != nil {
+		slog.Errorf("[asset][request][/asset/list/ [post]] FindAssetListByPage valid error %v.", err.Error())
+		handler.ReturnFormat(c, constapicode.ErrorReq, nil)
+		return
+	}
+	assets, counts, err := ah.ah.FindAssetListByPage(param)
 	handler.ReturnPageFormat(c, err, assets, counts)
 	return
 }

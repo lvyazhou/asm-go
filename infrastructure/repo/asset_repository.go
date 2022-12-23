@@ -124,7 +124,7 @@ func (a AssetRepo) FindAssetList(assetQuery *asset_entity.AssetQuery) (assetList
 
 func (a AssetRepo) FindAssetListByPage(assetQuery *asset_entity.AssetQuery) ([]*asset_entity.Asset, int64, error) {
 	var coll = mgoDb.NewMgoCollection()
-	filter := bson.D{{"asset_type", "2"}}
+	filter := bson.D{}
 	// 计算count
 	count, err := coll.CountDocuments(context.TODO(), filter)
 	if err != nil {
@@ -132,8 +132,9 @@ func (a AssetRepo) FindAssetListByPage(assetQuery *asset_entity.AssetQuery) ([]*
 		return nil, 0, err
 	}
 	// 分页查询
+	pageNo := (assetQuery.PageNo - 1) * assetQuery.PageSize // 当前页数
 	var opts = &options.FindOptions{
-		Skip:  &assetQuery.PageNo,
+		Skip:  &pageNo,
 		Limit: &assetQuery.PageSize,
 		Sort:  bson.D{{"id", -1}}, // 1 升序 -1 降序
 	}

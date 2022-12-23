@@ -25,11 +25,7 @@ type AssetDto struct {
 
 // AssetQueryDto 资产查询DTO
 type AssetQueryDto struct {
-	// 当前页码
-	pageNo int64 `json:"page_no"`
-
-	// 每页多少条
-	PageSize int64 `json:"page_size"`
+	PageCommon
 
 	// 资产名称
 	AssetName string `json:"asset_name"`
@@ -55,7 +51,7 @@ func (dto *AssetDto) AssetDtoConvertEntity(id, userId int64) *asset_entity.Asset
 func (dto *AssetQueryDto) AssetQueryDtoConvertEntity() *asset_entity.AssetQuery {
 	return &asset_entity.AssetQuery{
 		AssetName: dto.AssetName,
-		PageNo:    dto.pageNo,
-		PageSize:  dto.PageSize,
+		PageNo:    int64(dto.Page),
+		PageSize:  int64(dto.Size),
 	}
 }

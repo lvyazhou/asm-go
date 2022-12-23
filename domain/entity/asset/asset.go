@@ -1,6 +1,12 @@
 package asset_entity
 
-import "time"
+import (
+	"asm_platform/application/vo"
+	contansassetcode "asm_platform/infrastructure/pkg/constants/asset_code"
+	utils_tool "asm_platform/infrastructure/pkg/tool/utils"
+	"reflect"
+	"time"
+)
 
 // Asset 网络资产属性
 type Asset struct {
@@ -40,4 +46,27 @@ type Asset struct {
 
 	// UpdateTime 更新时间
 	UpdateTime time.Time `bson:"update_time,omitempty"`
+}
+
+// IsEmpty 判断是否为空
+func (asset *Asset) IsEmpty() bool {
+	if asset == nil {
+		return false
+	}
+	return reflect.DeepEqual(asset, Asset{})
+}
+
+// AssetToVo 实体转化为vo
+func (asset *Asset) AssetToVo() *vo.AssetVo {
+	return &vo.AssetVo{
+		ID:         asset.ID,
+		AssetNo:    asset.AssetNo,
+		AssetName:  asset.AssetName,
+		AssetType:  asset.AssetType,
+		AssetLevel: contansassetcode.AssetLevel(asset.AssetLevel).String(),
+		AssetGroup: asset.AssetGroup,
+		Mgr:        asset.Mgr,
+		Dept:       asset.Dept,
+		CreateTime: utils_tool.FormatTimeToString(asset.CreateTime),
+	}
 }
