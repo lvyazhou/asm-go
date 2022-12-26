@@ -4,6 +4,7 @@ import (
 	"asm_platform/application/vo"
 	contansassetcode "asm_platform/infrastructure/pkg/constants/asset_code"
 	utils_tool "asm_platform/infrastructure/pkg/tool/utils"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"reflect"
 	"time"
 )
@@ -12,7 +13,7 @@ import (
 type Asset struct {
 
 	// ID
-	ID int64 `bson:"id"`
+	ID primitive.ObjectID `bson:"_id,omitempty"`
 
 	// 资产标识
 	AssetNo string `bson:"asset_no"`
@@ -59,7 +60,7 @@ func (asset *Asset) IsEmpty() bool {
 // AssetToVo 实体转化为vo
 func (asset *Asset) AssetToVo() *vo.AssetVo {
 	return &vo.AssetVo{
-		ID:         asset.ID,
+		ID:         asset.ID.Hex(),
 		AssetNo:    asset.AssetNo,
 		AssetName:  asset.AssetName,
 		AssetType:  asset.AssetType,

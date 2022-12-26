@@ -5,8 +5,8 @@ import (
 	"asm_platform/application/vo"
 	asset_entity "asm_platform/domain/entity/asset"
 	constapicode "asm_platform/infrastructure/pkg/constants/api_code"
-	utils_tool "asm_platform/infrastructure/pkg/tool/utils"
 	"asm_platform/infrastructure/repo"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"strconv"
 	"time"
 )
@@ -27,7 +27,7 @@ var assetRepo = repo.NewAssetRepo()
 
 func (a AssetApp) SaveAsset() constapicode.SocError {
 	asset := &asset_entity.Asset{
-		ID:         utils_tool.GenerateUniqueId(),
+		ID:         primitive.NewObjectID(),
 		CreateUser: 11,
 		CreateTime: time.Now(),
 		UpdateUser: 22,
@@ -47,7 +47,7 @@ func (a AssetApp) BatchSaveAsset() constapicode.SocError {
 	var assetList []*asset_entity.Asset
 	for i := 0; i < 10; i++ {
 		asset := &asset_entity.Asset{
-			ID:         utils_tool.GenerateUniqueId(),
+			ID:         primitive.NewObjectID(),
 			CreateUser: 11,
 			CreateTime: time.Now(),
 			UpdateUser: 22,

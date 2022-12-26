@@ -4,7 +4,7 @@ import "reflect"
 
 type AssetVo struct {
 	// 资产编号
-	ID int64 `json:"id,string"`
+	ID string `json:"string"`
 	//资产标识
 	AssetNo string `json:"asset_no"`
 	//资产名称

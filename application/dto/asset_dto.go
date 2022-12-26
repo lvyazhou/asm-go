@@ -2,6 +2,7 @@ package dto
 
 import (
 	asset_entity "asm_platform/domain/entity/asset"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"time"
 )
 
@@ -32,9 +33,9 @@ type AssetQueryDto struct {
 }
 
 // AssetDtoConvertEntity 资产dto转为实体
-func (dto *AssetDto) AssetDtoConvertEntity(id, userId int64) *asset_entity.Asset {
+func (dto *AssetDto) AssetDtoConvertEntity(userId int64) *asset_entity.Asset {
 	return &asset_entity.Asset{
-		ID:         id,
+		ID:         primitive.NewObjectID(),
 		AssetNo:    dto.AssetNo,
 		AssetName:  dto.AssetName,
 		AssetType:  dto.AssetType,
@@ -49,9 +50,11 @@ func (dto *AssetDto) AssetDtoConvertEntity(id, userId int64) *asset_entity.Asset
 
 // AssetQueryDtoConvertEntity 资产查询dto转化为实体
 func (dto *AssetQueryDto) AssetQueryDtoConvertEntity() *asset_entity.AssetQuery {
-	return &asset_entity.AssetQuery{
-		AssetName: dto.AssetName,
-		PageNo:    int64(dto.Page),
-		PageSize:  int64(dto.Size),
+	query := &asset_entity.AssetQuery{
+		PageNo:   int64(dto.Page),
+		PageSize: int64(dto.Size),
 	}
+	query.Condition.AssetName = dto.AssetName
+	// ...
+	return query
 }
