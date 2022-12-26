@@ -123,7 +123,9 @@ func (a AssetRepo) FindAssetList(assetQuery *asset_entity.AssetQuery) (assetList
 }
 
 func (a AssetRepo) FindAssetListByPage(assetQuery *asset_entity.AssetQuery) ([]*asset_entity.Asset, int64, error) {
+	// 数据库链接
 	var coll = mgoDb.NewMgoCollection()
+	// 条件查询
 	filter := assetQuery.BuildAssetQueryFilter()
 
 	// 计算count
