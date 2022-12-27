@@ -2,6 +2,7 @@ package asset_router
 
 import (
 	"asm_platform/interfaces/handler/asset"
+	domain_handle "asm_platform/interfaces/handler/domain"
 	"github.com/gin-gonic/gin"
 )
 
@@ -26,5 +27,13 @@ func SetupAssetRouter(group *gin.RouterGroup) {
 		// 查询资产
 		assetGroup.POST("/list/", assets.FindAssetListByPage)
 
+		// 实例化应用层接口
+		domains := domain_handle.NewDomainHandle()
+
+		// 保存域名
+		assetGroup.POST("/domain/save/", domains.SaveDomain)
+
+		// 查询域名
+		assetGroup.POST("/domain/list/", domains.FindDomainList)
 	}
 }

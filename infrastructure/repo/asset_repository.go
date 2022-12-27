@@ -1,9 +1,9 @@
 package repo
 
 import (
-	asset_entity "asm_platform/domain/entity/asset"
+	"asm_platform/domain/entity/asset"
 	"asm_platform/domain/repository"
-	mgo "asm_platform/infrastructure/pkg/database/mongo"
+	"asm_platform/infrastructure/pkg/database/mongo"
 	"asm_platform/infrastructure/pkg/slog"
 	"context"
 	"go.mongodb.org/mongo-driver/bson"
@@ -23,7 +23,7 @@ func NewAssetRepo() *AssetRepo {
 var _ repository.AssetRepository = &AssetRepo{}
 
 // database name
-var mgoDb = mgo.Mgo{
+var assetMgoDb = mgo.Mgo{
 	Database:   "asm",
 	Collection: "b_asset",
 }
@@ -31,7 +31,7 @@ var mgoDb = mgo.Mgo{
 func (a AssetRepo) SaveAsset(asset *asset_entity.Asset) error {
 
 	// collection
-	var assetCollection = mgoDb.NewMgoCollection()
+	var assetCollection = assetMgoDb.NewMgoCollection()
 	result, err := assetCollection.InsertOne(context.TODO(), asset)
 	if err != nil {
 		slog.Errorf("asset collection insert error: %v", err.Error())
@@ -44,7 +44,7 @@ func (a AssetRepo) SaveAsset(asset *asset_entity.Asset) error {
 
 func (a AssetRepo) BatchSaveAssetList(assetList []*asset_entity.Asset) error {
 	// collection
-	var assetCollection = mgoDb.NewMgoCollection()
+	var assetCollection = assetMgoDb.NewMgoCollection()
 	var newAssetList []interface{}
 	if len(assetList) > 0 {
 		for a := range assetList {
@@ -61,7 +61,7 @@ func (a AssetRepo) BatchSaveAssetList(assetList []*asset_entity.Asset) error {
 }
 
 func (a AssetRepo) UpdateAsset(asset *asset_entity.Asset) error {
-	var coll = mgoDb.NewMgoCollection()
+	var coll = assetMgoDb.NewMgoCollection()
 	filter := bson.D{{"id", asset.ID}}
 	// 对象转换为bson d
 	update := bson.D{{"$set", bson.D{{"asset_name", "lyz"}, {"asset_type", 4}}}}
@@ -76,7 +76,7 @@ func (a AssetRepo) UpdateAsset(asset *asset_entity.Asset) error {
 }
 
 func (a AssetRepo) DeleteAssetById(id int64) error {
-	var coll = mgoDb.NewMgoCollection()
+	var coll = assetMgoDb.NewMgoCollection()
 	filter := bson.D{{"id", id}}
 	result, err := coll.DeleteOne(context.TODO(), filter)
 	if err != nil {
@@ -89,7 +89,7 @@ func (a AssetRepo) DeleteAssetById(id int64) error {
 
 func (a AssetRepo) GetAssetById(id int64) (asset *asset_entity.Asset, err error) {
 	// collection
-	var assetCollection = mgoDb.NewMgoCollection()
+	var assetCollection = assetMgoDb.NewMgoCollection()
 	filter := bson.D{{"id", id}}
 	err = assetCollection.FindOne(context.TODO(), filter).Decode(&asset)
 	if err != nil {
@@ -102,8 +102,8 @@ func (a AssetRepo) GetAssetById(id int64) (asset *asset_entity.Asset, err error)
 }
 
 func (a AssetRepo) FindAssetList(assetQuery *asset_entity.AssetQuery) (assetList []*asset_entity.Asset, err error) {
-	var coll = mgoDb.NewMgoCollection()
-	filter := bson.D{{"asset_type", "2"}}
+	var coll = assetMgoDb.NewMgoCollection()
+	filter := assetQuery.BuildAssetQueryFilter()
 	var opts = options.Find()
 	opts.SetSort(bson.D{{"id", -1}})
 	cursor, err := coll.Find(context.TODO(), filter, opts)
@@ -124,7 +124,7 @@ func (a AssetRepo) FindAssetList(assetQuery *asset_entity.AssetQuery) (assetList
 
 func (a AssetRepo) FindAssetListByPage(assetQuery *asset_entity.AssetQuery) ([]*asset_entity.Asset, int64, error) {
 	// 数据库链接
-	var coll = mgoDb.NewMgoCollection()
+	var coll = assetMgoDb.NewMgoCollection()
 	// 条件查询
 	filter := assetQuery.BuildAssetQueryFilter()
 

@@ -59,3 +59,7 @@ func (ah *AssetHandle) FindAssetListByPage(c *gin.Context) {
 	handler.ReturnPageFormat(c, err, assets, counts)
 	return
 }
+
+func (ah *AssetHandle) SaveAssetDomain(context *gin.Context) {
+
+}
