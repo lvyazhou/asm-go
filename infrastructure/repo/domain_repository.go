@@ -1,14 +1,13 @@
 package repo
 
 import (
-	"asm_platform/domain/entity/asset"
+	"asm_platform/domain/entity/domain"
 	"asm_platform/domain/repository"
 	"asm_platform/infrastructure/pkg/database/mongo"
 	"asm_platform/infrastructure/pkg/slog"
 	"context"
 	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -28,7 +27,7 @@ var domainMgoDb = mgo.Mgo{
 	Collection: "b_domain",
 }
 
-func (d DomainRepo) SaveDomain(domain *asset_entity.Domain) error {
+func (d DomainRepo) SaveDomain(domain *domain_entity.Domain) error {
 	// 数据库链接
 	coll := domainMgoDb.NewMgoCollection()
 
@@ -42,17 +41,25 @@ func (d DomainRepo) SaveDomain(domain *asset_entity.Domain) error {
 	return nil
 }
 
-func (d DomainRepo) FindDomainList() error {
+func (d DomainRepo) FindDomainList() ([]*domain_entity.DomainLookup, error) {
 	// 数据库链接
 	coll := domainMgoDb.NewMgoCollection()
-	id, _ := primitive.ObjectIDFromHex("63aa5a6db09f564ed4881223")
+	// 查询条件
+	//id, _ := primitive.ObjectIDFromHex("63aa5a6db09f564ed4881223")
+	//
+	//matchStage := bson.D{{"$match", bson.D{{"asset", id}}}}
 
-	matchStage := bson.D{{"$match", bson.D{{"asset", id}}}}
+	// 分页
+	pageNo := 3
+	pageSize := 5
+	pageNo = (pageNo - 1) * pageSize
+	skipStage := bson.D{{"$skip", pageNo}}
+	limitStage := bson.D{{"$limit", pageSize}}
 
 	lookupStage := bson.D{{"$lookup", bson.D{{"from", "b_asset"}, {"localField", "asset"}, {"foreignField", "_id"}, {"as", "asset"}}}}
 	unwindStage := bson.D{{"$unwind", bson.D{{"path", "$asset"}, {"preserveNullAndEmptyArrays", false}}}}
 
-	showLoadedCursor, err := coll.Aggregate(context.TODO(), mongo.Pipeline{matchStage, lookupStage, unwindStage})
+	showLoadedCursor, err := coll.Aggregate(context.TODO(), mongo.Pipeline{skipStage, limitStage, lookupStage, unwindStage})
 	if err != nil {
 		panic(err)
 	}
@@ -60,6 +67,23 @@ func (d DomainRepo) FindDomainList() error {
 	if err = showLoadedCursor.All(context.TODO(), &showsLoaded); err != nil {
 		panic(err)
 	}
-	fmt.Println(showsLoaded)
-	return nil
+
+	var ds []*domain_entity.DomainLookup
+	//fmt.Println(showsLoaded)
+	for _, v := range showsLoaded {
+		//fmt.Println(k)
+		//fmt.Println(v)
+		// convert m to s
+		var s *domain_entity.DomainLookup
+		bsonBytes, _ := bson.Marshal(v)
+		err = bson.Unmarshal(bsonBytes, &s)
+		if err != nil {
+			fmt.Println(err.Error())
+		}
+		//fmt.Println(s)
+		//fmt.Println(s.Id.Hex())
+		ds = append(ds, s)
+	}
+	//fmt.Println(ds)
+	return ds, nil
 }

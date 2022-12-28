@@ -22,7 +22,7 @@ func (dh *DomainHandle) SaveDomain(c *gin.Context) {
 }
 
 func (dh *DomainHandle) FindDomainList(c *gin.Context) {
-	err := dh.dh.FindDomainList()
-	handler.ReturnFormat(c, err, nil)
+	list, code := dh.dh.FindDomainList()
+	handler.ReturnFormat(c, code, list)
 	return
 }

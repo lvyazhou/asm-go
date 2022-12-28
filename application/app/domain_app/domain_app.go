@@ -1,7 +1,9 @@
 package domain_app
 
 import (
+	"asm_platform/application/vo"
 	asset_entity "asm_platform/domain/entity/asset"
+	"asm_platform/domain/entity/domain"
 	constapicode "asm_platform/infrastructure/pkg/constants/api_code"
 	"asm_platform/infrastructure/repo"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -43,7 +45,7 @@ func (d DomainApp) SaveDomain() constapicode.SocError {
 	}
 	assetRepo.SaveAsset(asset)
 
-	domain1 := &asset_entity.Domain{
+	domain1 := &domain_entity.Domain{
 		ID:     primitive.NewObjectID(),
 		Asset:  assetId,
 		Domain: "ztz.me",
@@ -51,7 +53,7 @@ func (d DomainApp) SaveDomain() constapicode.SocError {
 	}
 	domainRepo.SaveDomain(domain1)
 
-	domain2 := &asset_entity.Domain{
+	domain2 := &domain_entity.Domain{
 		ID:     primitive.NewObjectID(),
 		Asset:  assetId,
 		Domain: "ztz.md",
@@ -62,8 +64,22 @@ func (d DomainApp) SaveDomain() constapicode.SocError {
 	return constapicode.Success
 }
 
-func (d DomainApp) FindDomainList() constapicode.SocError {
-	domainRepo.FindDomainList()
-	
-	return constapicode.Success
+func (d DomainApp) FindDomainList() ([]*vo.DomainVo, constapicode.SocError) {
+	// 查询列表
+	domainList, err := domainRepo.FindDomainList()
+	if err != nil {
+		return nil, constapicode.DocumentNotFind
+	}
+	// 解析domain列表
+	var voList []*vo.DomainVo
+	if len(domainList) > 0 {
+		for d := range domainList {
+			domain := domainList[d]
+			if domain.IsEmpty() {
+				continue
+			}
+			voList = append(voList, domain.DomainToVo())
+		}
+	}
+	return voList, constapicode.Success
 }
