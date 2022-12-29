@@ -66,7 +66,13 @@ func (d DomainApp) SaveDomain() constapicode.SocError {
 
 func (d DomainApp) FindDomainList() ([]*vo.DomainVo, constapicode.SocError) {
 	// 查询列表
-	domainList, err := domainRepo.FindDomainList()
+	query := &domain_entity.DomainQuery{
+		PageNo:   1,
+		PageSize: 5,
+	}
+	query.Condition.AssetId = "63aa5a6db09f564ed4881223"
+	query.Condition.Domain = "ztz.md"
+	domainList, err := domainRepo.FindDomainList(query)
 	if err != nil {
 		return nil, constapicode.DocumentNotFind
 	}

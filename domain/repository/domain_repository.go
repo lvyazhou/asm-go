@@ -9,5 +9,5 @@ type DomainRepository interface {
 	SaveDomain(domain *domain_entity.Domain) error
 
 	// FindDomainList 查找域名
-	FindDomainList() ([]*domain_entity.DomainLookup, error)
+	FindDomainList(query *domain_entity.DomainQuery) ([]*domain_entity.DomainLookup, error)
 }

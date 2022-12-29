@@ -41,17 +41,22 @@ func (d DomainRepo) SaveDomain(domain *domain_entity.Domain) error {
 	return nil
 }
 
-func (d DomainRepo) FindDomainList() ([]*domain_entity.DomainLookup, error) {
+func (d DomainRepo) FindDomainList(query *domain_entity.DomainQuery) ([]*domain_entity.DomainLookup, error) {
 	// 数据库链接
 	coll := domainMgoDb.NewMgoCollection()
 	// 查询条件
 	//id, _ := primitive.ObjectIDFromHex("63aa5a6db09f564ed4881223")
-	//
-	//matchStage := bson.D{{"$match", bson.D{{"asset", id}}}}
+	//matchStage2 := bson.D{{"$match", bson.D{{"asset", id}, {"domain", "ztz.me"}}}}
+	//fmt.Println(matchStage2)
 
+	bsonD := query.BuildQueryFilter()
+	fmt.Println(bsonD)
+
+	matchStage := bson.D{{"$match", bsonD}}
+	fmt.Println(matchStage)
 	// 分页
-	pageNo := 3
-	pageSize := 5
+	pageNo := query.PageNo
+	pageSize := query.PageSize
 	pageNo = (pageNo - 1) * pageSize
 	skipStage := bson.D{{"$skip", pageNo}}
 	limitStage := bson.D{{"$limit", pageSize}}
@@ -59,8 +64,9 @@ func (d DomainRepo) FindDomainList() ([]*domain_entity.DomainLookup, error) {
 	lookupStage := bson.D{{"$lookup", bson.D{{"from", "b_asset"}, {"localField", "asset"}, {"foreignField", "_id"}, {"as", "asset"}}}}
 	unwindStage := bson.D{{"$unwind", bson.D{{"path", "$asset"}, {"preserveNullAndEmptyArrays", false}}}}
 
-	showLoadedCursor, err := coll.Aggregate(context.TODO(), mongo.Pipeline{skipStage, limitStage, lookupStage, unwindStage})
+	showLoadedCursor, err := coll.Aggregate(context.TODO(), mongo.Pipeline{matchStage, skipStage, limitStage, lookupStage, unwindStage})
 	if err != nil {
+		fmt.Println(err.Error())
 		panic(err)
 	}
 	var showsLoaded []bson.M
