@@ -11,6 +11,8 @@ require (
 	github.com/go-redis/redis v6.15.9+incompatible
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/google/uuid v1.1.2
+	github.com/jlaffaye/ftp v0.1.0
+	github.com/jmoiron/sqlx v1.3.5
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/olivere/elastic/v7 v7.0.32
 	github.com/segmentio/kafka-go v0.4.38
@@ -48,6 +50,8 @@ require (
 	github.com/gorilla/context v1.1.1 // indirect
 	github.com/gorilla/securecookie v1.1.1 // indirect
 	github.com/gorilla/sessions v1.2.1 // indirect
+	github.com/hashicorp/errwrap v1.0.0 // indirect
+	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
