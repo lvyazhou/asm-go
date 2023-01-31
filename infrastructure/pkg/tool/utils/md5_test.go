@@ -7,7 +7,7 @@ import (
 )
 
 func TestMd5Crypto(t *testing.T) {
-	str := "1234567890"
+	str := "123456789011"
 	crypto := Md5Crypto(slat2.SlatUserPwd + str)
 	fmt.Println(crypto)
 }

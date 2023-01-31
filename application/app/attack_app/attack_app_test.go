@@ -8,11 +8,11 @@ import (
 
 func TestGetBruteType(t *testing.T) {
 	// test mysql 4
-	st := constservicetype.ServiceType(4)
+	st := constservicetype.ServiceType(1)
 
 	info := &dto.HostInfo{
 		Host: "127.0.0.1",
-		Port: "3306",
+		Port: "3308",
 	}
 
 	var Passwords = []string{
@@ -33,6 +33,7 @@ func TestGetBruteType(t *testing.T) {
 	t.Log(ret)
 	t.Log("爆破次数", cf.GetNum())
 	if ret {
+
 		t.Log(cf.GetInfo())
 	}
 }

@@ -3,12 +3,12 @@ package main
 import (
 	"asm_platform/infrastructure/config"
 	"asm_platform/infrastructure/pkg/slog"
+	utils_tool "asm_platform/infrastructure/pkg/tool/utils"
 	"asm_platform/infrastructure/repo"
 	"flag"
 	"fmt"
 	"os"
 	"strconv"
-	"time"
 )
 
 func main() {
@@ -27,15 +27,37 @@ func main() {
 
 	// 生产数据
 	productMsg()
+
+}
+func sendEvent(topic string, str string) {
+	fmt.Printf("send topic name %v start ... \n", topic)
+	// 发送kafka test
+	r := repo.NewKafkaRepo(topic, "")
+	var ms []map[string]string
+	for i := 0; i < 1; i++ {
+		m := map[string]string{}
+		key := strconv.FormatInt(utils_tool.GenerateUniqueId(), 10)
+		m[key] = str
+		ms = append(ms, m)
+	}
+	r.WriteKafkaMessage(ms)
+	fmt.Printf("send topic name %v finished ... \n", topic)
 }
 
 func productMsg() {
 	fmt.Println(" ---- start product msg ----")
 	// 发送kafka test
-	r := repo.NewKafkaRepo("lyz", "")
-	m := map[string]string{}
-	key := strconv.FormatInt(time.Now().Unix(), 10)
-	m[key] = "lyz888888"
-	r.WriteKafkaMessage(m)
+	r := repo.NewKafkaRepo("mss-edr-log", "")
+	var ms []map[string]string
+
+	for i := 0; i < 111; i++ {
+		m := map[string]string{}
+		key := strconv.FormatInt(utils_tool.GenerateUniqueId(), 10)
+
+		m[key] = ""
+		ms = append(ms, m)
+	}
+	slog.Infof("send kafka size %v ...", len(ms))
+	r.WriteKafkaMessage(ms)
 	slog.Info(" ---- end product msg ----")
 }

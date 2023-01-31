@@ -28,25 +28,57 @@ func getBruteType(bruteType constservicetype.ServiceType) BruteFunc {
 	var conn BruteFunc
 	switch bruteType {
 	case constservicetype.ServiceFTP:
-		conn = &MysqlConn{}
+		conn = &FtpConn{}
+	case constservicetype.ServiceNFS:
+
+	case constservicetype.ServiceSamba:
+
+	case constservicetype.ServiceLDAP:
+
+	case constservicetype.ServiceSsh:
+		conn = &SshConn{}
+	case constservicetype.ServiceRdp:
+		conn = &RdpConn{}
+	case constservicetype.ServiceTelnet:
+
+	case constservicetype.ServiceVNC:
 
 	case constservicetype.ServiceMongodb:
-
+		conn = &MongoConn{}
 	case constservicetype.ServiceMssql:
 		conn = &MSSqlConn{}
 	case constservicetype.ServiceMysql:
 		conn = &MysqlConn{}
-
 	case constservicetype.ServiceOracle:
-
+		conn = &OracleConn{}
 	case constservicetype.ServicePostgres:
-
-	case constservicetype.ServiceRdp:
-
+		conn = &PostgresConn{}
 	case constservicetype.ServiceRedis:
 		conn = &RedisConn{}
 
-	case constservicetype.ServiceSsh:
+	case constservicetype.ServiceEs:
+
+	case constservicetype.ServiceMemCache:
+
+	case constservicetype.ServiceDB2:
+
+	case constservicetype.ServiceWeb:
+
+	case constservicetype.ServiceWebLogic:
+
+	case constservicetype.ServiceJboss:
+
+	case constservicetype.ServiceWebSphere:
+
+	case constservicetype.ServiceGlassFish:
+
+	case constservicetype.ServiceLotusDominion:
+
+	case constservicetype.ServiceWebMin:
+
+	case constservicetype.ServiceEmail:
+
+	case constservicetype.ServiceSNMP:
 
 	default:
 		panic("unknown service type")

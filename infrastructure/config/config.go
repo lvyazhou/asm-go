@@ -16,7 +16,7 @@ func Init(env string) {
 	if err != nil {
 		log.Panicf("error when finding home directory: %s\n", err)
 	}
-	homeConfigPath := fmt.Sprintf("%s/.360-osint-web/", home)
+	homeConfigPath := fmt.Sprintf("%s/.asm-web/", home)
 	currentConfigPath := "infrastructure/config/"
 
 	config = viper.New()
@@ -31,4 +31,13 @@ func Init(env string) {
 
 func GetConfig() *viper.Viper {
 	return config
+}
+
+// S3Config s3 配置信息
+type S3Config struct {
+	S3Bucket    string `ini:"s3_bucket"`
+	S3AccessKey string `ini:"s3_access_key"`
+	S3SecretKey string `ini:"s3_secret_key"`
+	S3Region    string `ini:"s3_region"`
+	S3EndPoint  string `ini:"s3_end_point"`
 }
