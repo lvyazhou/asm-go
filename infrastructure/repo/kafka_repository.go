@@ -27,7 +27,38 @@ func NewKafkaRepo(topic string, groupId string) *KafkaRepo {
 var _ repository.KafkaRepository = &KafkaRepo{}
 
 // WriteKafkaMessage 写入kafka消息
-func (k KafkaRepo) WriteKafkaMessage(mapList []map[string]string) error {
+func (k KafkaRepo) WriteKafkaMessage(m map[string]string) error {
+	// 初始化kafka product repo
+	product := kfk.KfkProduct{Topic: k.Topic}
+	w := product.NewKfkProduct()
+
+	// 定义发送的消息信息
+	var messages []kafka.Message
+	if len(m) > 0 {
+		for k, v := range m {
+			var msg = kafka.Message{
+				Key:   []byte(k),
+				Value: []byte(v),
+			}
+			messages = append(messages, msg)
+		}
+	}
+	var err error
+
+	// attempt to create topic prior to publishing the message
+	err = w.WriteMessages(context.Background(), messages...)
+	if err != nil {
+		slog.Errorf("unexpected error %v", err)
+	}
+
+	if err := w.Close(); err != nil {
+		slog.Errorf("failed to close writer:", err)
+	}
+	return err
+}
+
+// WriteKafkaMessageList 写入kafka消息
+func (k KafkaRepo) WriteKafkaMessageList(mapList []map[string]string) error {
 	// 初始化kafka product repo
 	product := kfk.KfkProduct{Topic: k.Topic}
 	w := product.NewKfkProduct()

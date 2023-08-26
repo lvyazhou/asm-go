@@ -40,7 +40,7 @@ func sendEvent(topic string, str string) {
 		m[key] = str
 		ms = append(ms, m)
 	}
-	r.WriteKafkaMessage(ms)
+	r.WriteKafkaMessageList(ms)
 	fmt.Printf("send topic name %v finished ... \n", topic)
 }
 
@@ -58,6 +58,6 @@ func productMsg() {
 		ms = append(ms, m)
 	}
 	slog.Infof("send kafka size %v ...", len(ms))
-	r.WriteKafkaMessage(ms)
+	r.WriteKafkaMessageList(ms)
 	slog.Info(" ---- end product msg ----")
 }
